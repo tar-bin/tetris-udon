@@ -179,7 +179,7 @@ namespace Script {
 
             for (var i = 0; i < 5; i++) {
                 var offsetX = wallKickData[i, 0];
-                var offsetY = wallKickData[i, 1];
+                var offsetY = - wallKickData[i, 1];
                 if (CheckAndApplyRotate(rotatedData, currentPiece, offsetX, offsetY)) {
                     currentPiece.Pos.X += offsetX;
                     currentPiece.Pos.Y += offsetY;
@@ -227,11 +227,11 @@ namespace Script {
             } else {
                 switch (currentAngle) {
                     case Angle0: //0->R
-                        wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, 1}, {0, 2}, {-1, -2}};
+                        wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}};
                         nextAngle = Angle90;
                         break;
                     case Angle90: //R->2
-                        wallKickData = new[,] {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {0, 2}};
+                        wallKickData = new[,] {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}};
                         nextAngle = Angle180;
                         break;
                     case Angle180: //2->L
@@ -247,7 +247,7 @@ namespace Script {
 
             for (var i = 0; i < 5; i++) {
                 var offsetX = wallKickData[i, 0];
-                var offsetY = wallKickData[i, 1];
+                var offsetY = - wallKickData[i, 1];
                 if (CheckAndApplyRotate(rotatedData, currentPiece, offsetX, offsetY)) {
                     currentPiece.Pos.X += offsetX;
                     currentPiece.Pos.Y += offsetY;
