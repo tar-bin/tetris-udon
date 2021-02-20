@@ -13,14 +13,16 @@ namespace Script {
         private TetrisFieldState _fieldState;
         private TetrisPiece _nextPiece;
 
-        private int _frameCount;
+        private int _autoMoveDownFrameCount;
+        private int _deleteDelayFrameCount;
+        private bool _isNeedPacking;
 
         private void Start() {
             _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
             _fieldState = new TetrisFieldState {
                 CurrentPiece = TetrisPiece.Factory.CreateRandomPiece()
             };
-            _frameCount = 0;
+            _autoMoveDownFrameCount = 0;
 
             // Spawn位置に補正
             _fieldState.CurrentPiece.Pos.X = PositionSpawnX;
@@ -32,19 +34,27 @@ namespace Script {
         }
 
         private void Update() {
-            // 30フレームごとに下に移動
-            if (++_frameCount > 30) {
-                _frameCount = 0;
+            if (_isNeedPacking) {
+                if (++_autoMoveDownFrameCount > 10) {
+                    //削除した行を詰める
+                    PackLine();
+                    _isNeedPacking = false;
+                }
+            }
+
+            // 一定フレームごとに下に移動
+            if (++_autoMoveDownFrameCount > 24) {
+                _autoMoveDownFrameCount = 0;
                 if (!MoveDown()) {
                     //ピースの位置を確定し、現在の状態を固定
                     _fieldState.UpdateAndFixCurrentField();
 
                     //削除処理
-                    //TODO
-
-                    //削除した行を詰める
-                    //TODO
-
+                    if (DeleteFilledLine()) {
+                        _isNeedPacking = true;
+                        _autoMoveDownFrameCount = 0;
+                    }
+                    
                     //次のピースに入れ替え
                     _fieldState.CurrentPiece = _nextPiece;
                     _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
@@ -57,8 +67,59 @@ namespace Script {
             }
         }
 
-        public void FrameCountDecrease(int count) {
-            _frameCount -= count;
+        private bool DeleteFilledLine() {
+            var field = _fieldState.CurrentField;
+            var isNeedPacking = false;
+            for (var i = 0; i < field.GetLength(0); i++) {
+                //ラインが埋まっているかチェック
+                var isFilled = true;
+                for (var j = 0; j < field.GetLength(1); j++) {
+                    if (field[i, j] != 0) {
+                        continue;
+                    }
+                    isFilled = false;
+                    break;
+                }
+
+                //ラインが埋まっている場合ラインをクリア
+                if (isFilled) {
+                    for (var j = 0; j < field.GetLength(1); j++) {
+                        field[i, j] = 0;
+                    }
+                    isNeedPacking = true;
+                }
+            }
+            return isNeedPacking;
+        }
+
+        private void PackLine() {
+            var field = _fieldState.CurrentField;
+            var packedField = new int[PositionMaxY, PositionMaxX];
+            var y = field.GetLength(0) - 1;
+            for (var i = field.GetLength(0) - 1; i >= 0; i--) {
+                //ラインにブロックが存在するかチェック
+                var isExistBlock = false;
+                for (var j = 0; j < field.GetLength(1); j++) {
+                    if (field[i, j] != 0) {
+                        isExistBlock = true;
+                        break;
+                    }
+                }
+
+                //ブロックが存在する場合ラインを詰めてコピー
+                if (isExistBlock) {
+                    for (var j = 0; j < field.GetLength(1); j++) {
+                        packedField[y, j] = field[i, j];
+                    }
+                    y--;
+                }
+            }
+            // パッキングを適用
+            Array.Copy(packedField, _fieldState.CurrentField, _fieldState.CurrentField.Length);
+        }
+
+        public void FrameCountGrace(int count) {
+            _autoMoveDownFrameCount -= count;
         }
 
         public bool RotateLeft() {

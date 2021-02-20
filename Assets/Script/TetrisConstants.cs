@@ -9,7 +9,7 @@ namespace Script {
             new Material(Shader.Find("Unlit/Color")) {color = Color.green},
             new Material(Shader.Find("Unlit/Color")) {color = Color.red},
             new Material(Shader.Find("Unlit/Color")) {color = Color.blue},
-            new Material(Shader.Find("Unlit/Color")) {color = new Color(255, 69, 0)},
+            new Material(Shader.Find("Unlit/Color")) {color = new Color(1.0f, 165.0f/255f, 0)},
             new Material(Shader.Find("Unlit/Color")) {color = Color.magenta},
         };
 

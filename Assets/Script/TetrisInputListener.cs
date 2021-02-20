@@ -13,14 +13,14 @@ namespace Script {
             if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.E)) {
                 if (_model.RotateLeft()) {
                     //回転が適用できた場合はカウントに猶予を追加
-                    _model.FrameCountDecrease(12);
+                    _model.FrameCountGrace(12);
                 }
             }
             // 右回転
             if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.R)) {
                 if (_model.RotateRight()) {
                     //回転が適用できた場合はカウントに猶予を追加
-                    _model.FrameCountDecrease(12);
+                    _model.FrameCountGrace(12);
                 }
             }
             // ハードドロップ
