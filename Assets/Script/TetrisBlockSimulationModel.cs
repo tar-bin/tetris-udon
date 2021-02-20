@@ -256,13 +256,13 @@ namespace Script {
                 }
             } else {
                 switch (currentAngle) {
-                    case TetrisConstants.Angle90: //0->R
+                    case TetrisConstants.Angle0: //0->R
                         wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}};
-                        nextAngle = Angle90;
+                        nextAngle = TetrisConstants.Angle90;
                         break;
                     case TetrisConstants.Angle90: //R->2
                         wallKickData = new[,] {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}};
-                        nextAngle = Angle180;
+                        nextAngle = TetrisConstants.Angle180;
                         break;
                     case TetrisConstants.Angle180: //2->L
                         wallKickData = new[,] {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}};
