@@ -26,15 +26,15 @@ namespace Script {
                         //I
                         return new TetrisPiece {
                             Data = new[,] {
-                                {0, 1, 0, 0}, // □ ■ □ □
-                                {0, 1, 0, 0}, // □ ■ □ □
-                                {0, 1, 0, 0}, // □ ■ □ □
-                                {0, 1, 0, 0}, // □ ■ □ □
+                                {0, 0, 0, 0}, // □ □ □ □
+                                {1, 1, 1, 1}, // ■ ■ ■ ■
+                                {0, 0, 0, 0}, // □ □ □ □
+                                {0, 0, 0, 0}, // □ □ □ □ 
                             },
-                            Top = 0,
-                            Bottom = 3,
-                            Left = 1,
-                            Right = 1,
+                            Top = 1,
+                            Bottom = 1,
+                            Left = 0,
+                            Right = 3,
                         };
                     case 2:
                         //O
@@ -55,13 +55,13 @@ namespace Script {
                         return new TetrisPiece {
                             Data = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
-                                {0, 3, 0, 0}, // □ ■ □ □
                                 {0, 3, 3, 0}, // □ ■ ■ □
-                                {0, 0, 3, 0}, // □ □ ■ □
+                                {3, 3, 0, 0}, // ■ ■ □ □
+                                {0, 0, 0, 0}, // □ □ □ □
                             },
                             Top = 1,
-                            Bottom = 3,
-                            Left = 1,
+                            Bottom = 2,
+                            Left = 0,
                             Right = 2,
                         };
                     case 4:
@@ -69,13 +69,13 @@ namespace Script {
                         return new TetrisPiece {
                             Data = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
-                                {0, 0, 4, 0}, // □ □ ■ □
+                                {4, 4, 0, 0}, // ■ ■ □ □
                                 {0, 4, 4, 0}, // □ ■ ■ □
-                                {0, 4, 0, 0}, // □ ■ □ □
+                                {0, 0, 0, 0}, // □ □ □ □
                             },
                             Top = 1,
-                            Bottom = 3,
-                            Left = 1,
+                            Bottom = 2,
+                            Left = 0,
                             Right = 2,
                         };
                     case 5:
@@ -83,13 +83,13 @@ namespace Script {
                         return new TetrisPiece {
                             Data = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
-                                {0, 5, 5, 0}, // □ ■ ■ □
                                 {0, 0, 5, 0}, // □ □ ■ □
-                                {0, 0, 5, 0}, // □ □ ■ □
+                                {5, 5, 5, 0}, // ■ ■ ■ □
+                                {0, 0, 0, 0}, // □ □ □ □
                             },
                             Top = 1,
-                            Bottom = 3,
-                            Left = 1,
+                            Bottom = 2,
+                            Left = 0,
                             Right = 2,
                         };
                     case 6:
@@ -97,13 +97,13 @@ namespace Script {
                         return new TetrisPiece {
                             Data = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
-                                {0, 6, 6, 0}, // □ ■ ■ □
-                                {0, 6, 0, 0}, // □ ■ □ □
-                                {0, 6, 0, 0}, // □ ■ □ □
+                                {6, 0, 0, 0}, // ■ □ □ □
+                                {6, 6, 6, 0}, // ■ ■ ■ □
+                                {0, 0, 0, 0}, // □ □ □ □
                             },
                             Top = 1,
-                            Bottom = 3,
-                            Left = 1,
+                            Bottom = 2,
+                            Left = 0,
                             Right = 2,
                         };
                     default:
@@ -112,12 +112,12 @@ namespace Script {
                             Data = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {0, 7, 0, 0}, // □ ■ □ □
-                                {0, 7, 7, 0}, // □ ■ ■ □
-                                {0, 7, 0, 0}, // □ ■ □ □
+                                {7, 7, 7, 0}, // ■ ■ ■ □
+                                {0, 0, 0, 0}, // □ □ □ □
                             },
                             Top = 1,
-                            Bottom = 3,
-                            Left = 1,
+                            Bottom = 2,
+                            Left = 0,
                             Right = 2,
                         };
                 }
