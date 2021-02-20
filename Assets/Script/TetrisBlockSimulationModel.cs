@@ -32,10 +32,11 @@ namespace Script {
         }
 
         private void Update() {
+            // 30フレームごとに下に移動
             if (++_frameCount > 30) {
                 _frameCount = 0;
                 if (!MoveDown()) {
-                    //現在の状態を固定
+                    //ピースの位置を確定し、現在の状態を固定
                     _fieldState.UpdateAndFixCurrentField();
 
                     //削除処理
@@ -46,6 +47,7 @@ namespace Script {
                     //次のピースに入れ替え
                     _fieldState.CurrentPiece = _nextPiece;
                     _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
+                    nextPieceViewModel.PieceData = _nextPiece;
 
                     // Spawn位置に補正
                     _fieldState.CurrentPiece.Pos.X = PositionSpawnX;
