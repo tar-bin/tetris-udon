@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 namespace Script {
@@ -9,7 +10,12 @@ namespace Script {
         }
 
         public int Type { get; private set; }
-        public Position Pos { get; } = new Position();
+
+        public Position Pos { get; } = new Position {
+            X = TetrisConstants.PositionSpawnX,
+            Y = TetrisConstants.PositionSpawnY,
+        };
+
         public int[,] Preview { get; private set; }
         public int[,] Data { get; private set; }
         public int Angle { get; set; } = TetrisConstants.Angle0;
@@ -68,7 +74,7 @@ namespace Script {
                     result[j, rows - i - 1] = Data[i, j];
                 }
             }
-            
+
             return result;
         }
 
@@ -87,124 +93,127 @@ namespace Script {
         }
 
         public static class Factory {
+            private static readonly List<TetrisPiece> _piecePool = new List<TetrisPiece>();
+
+            private static void Reset() {
+                //I
+                _piecePool.Add(new TetrisPiece {
+                    Type = TetrisConstants.PieceTypeI,
+                    Data = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {1, 1, 1, 1}, // ■ ■ ■ ■
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {0, 0, 0, 0}, // □ □ □ □ 
+                    },
+                    Preview = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {1, 1, 1, 1}, // ■ ■ ■ ■
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {0, 0, 0, 0}, // □ □ □ □ 
+                    }
+                });
+                //O
+                _piecePool.Add(new TetrisPiece {
+                    Type = TetrisConstants.PieceTypeO,
+                    Data = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {0, 2, 2, 0}, // □ ■ ■ □
+                        {0, 2, 2, 0}, // □ ■ ■ □
+                        {0, 0, 0, 0}, // □ □ □ □
+                    },
+                    Preview = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {0, 2, 2, 0}, // □ ■ ■ □
+                        {0, 2, 2, 0}, // □ ■ ■ □
+                        {0, 0, 0, 0}, // □ □ □ □
+                    },
+                });
+                //S
+                _piecePool.Add(new TetrisPiece {
+                    Type = TetrisConstants.PieceTypeS,
+                    Data = new[,] {
+                        {0, 3, 3}, // □ ■ ■
+                        {3, 3, 0}, // ■ ■ □
+                        {0, 0, 0}, // □ □ □
+                    },
+                    Preview = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {0, 3, 3, 0}, // □ ■ ■ □
+                        {3, 3, 0, 0}, // ■ ■ □ □
+                        {0, 0, 0, 0}, // □ □ □ □
+                    },
+                });
+                //Z
+                _piecePool.Add(new TetrisPiece {
+                    Type = TetrisConstants.PieceTypeZ,
+                    Data = new[,] {
+                        {4, 4, 0}, // ■ ■ □
+                        {0, 4, 4}, // □ ■ ■
+                        {0, 0, 0}, // □ □ □
+                    },
+                    Preview = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {4, 4, 0, 0}, // ■ ■ □ □
+                        {0, 4, 4, 0}, // □ ■ ■ □
+                        {0, 0, 0, 0}, // □ □ □ □
+                    },
+                });
+                //J
+                _piecePool.Add(new TetrisPiece {
+                    Type = TetrisConstants.PieceTypeJ,
+                    Data = new[,] {
+                        {0, 0, 5}, // □ □ ■
+                        {5, 5, 5}, // ■ ■ ■
+                        {0, 0, 0}, // □ □ □
+                    },
+                    Preview = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {0, 0, 5, 0}, // □ □ ■ □
+                        {5, 5, 5, 0}, // ■ ■ ■ □
+                        {0, 0, 0, 0}, // □ □ □ □
+                    },
+                });
+                //L
+                _piecePool.Add(new TetrisPiece {
+                    Type = TetrisConstants.PieceTypeL,
+                    Data = new[,] {
+                        {6, 0, 0}, // ■ □ □
+                        {6, 6, 6}, // ■ ■ ■
+                        {0, 0, 0}, // □ □ □
+                    },
+                    Preview = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {6, 0, 0, 0}, // ■ □ □ □
+                        {6, 6, 6, 0}, // ■ ■ ■ □
+                        {0, 0, 0, 0}, // □ □ □ □
+                    },
+                });
+                //T
+                _piecePool.Add(new TetrisPiece {
+                    Type = TetrisConstants.PieceTypeT,
+                    Data = new[,] {
+                        {0, 7, 0}, // □ ■ □
+                        {7, 7, 7}, // ■ ■ ■
+                        {0, 0, 0}, // □ □ □
+                    },
+                    Preview = new[,] {
+                        {0, 0, 0, 0}, // □ □ □ □
+                        {0, 7, 0, 0}, // □ ■ □ □
+                        {7, 7, 7, 0}, // ■ ■ ■ □
+                        {0, 0, 0, 0}, // □ □ □ □
+                    },
+                });
+            }
+
             public static TetrisPiece CreateRandomPiece() {
-                var c = Random.Range(1, 8);
-                switch (c) {
-                    case 1:
-                        //I
-                        return new TetrisPiece {
-                            Type = TetrisConstants.PieceTypeI,
-                            Data = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {1, 1, 1, 1}, // ■ ■ ■ ■
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {0, 0, 0, 0}, // □ □ □ □ 
-                            },
-                            Preview = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {1, 1, 1, 1}, // ■ ■ ■ ■
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {0, 0, 0, 0}, // □ □ □ □ 
-                            }
-                        };
-                    case 2:
-                        //O
-                        return new TetrisPiece {
-                            Type = TetrisConstants.PieceTypeO,
-                            Data = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {0, 2, 2, 0}, // □ ■ ■ □
-                                {0, 2, 2, 0}, // □ ■ ■ □
-                                {0, 0, 0, 0}, // □ □ □ □
-                            },
-                            Preview = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {0, 2, 2, 0}, // □ ■ ■ □
-                                {0, 2, 2, 0}, // □ ■ ■ □
-                                {0, 0, 0, 0}, // □ □ □ □
-                            },
-                        };
-                    case 3:
-                        //S
-                        return new TetrisPiece {
-                            Type = TetrisConstants.PieceTypeS,
-                            Data = new[,] {
-                                {0, 3, 3}, // □ ■ ■
-                                {3, 3, 0}, // ■ ■ □
-                                {0, 0, 0}, // □ □ □
-                            },
-                            Preview = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {0, 3, 3, 0}, // □ ■ ■ □
-                                {3, 3, 0, 0}, // ■ ■ □ □
-                                {0, 0, 0, 0}, // □ □ □ □
-                            },
-                        };
-                    case 4:
-                        //Z
-                        return new TetrisPiece {
-                            Type = TetrisConstants.PieceTypeZ,
-                            Data = new[,] {
-                                {4, 4, 0}, // ■ ■ □
-                                {0, 4, 4}, // □ ■ ■
-                                {0, 0, 0}, // □ □ □
-                            },
-                            Preview = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {4, 4, 0, 0}, // ■ ■ □ □
-                                {0, 4, 4, 0}, // □ ■ ■ □
-                                {0, 0, 0, 0}, // □ □ □ □
-                            },
-                        };
-                    case 5:
-                        //J
-                        return new TetrisPiece {
-                            Type = TetrisConstants.PieceTypeJ,
-                            Data = new[,] {
-                                {0, 0, 5}, // □ □ ■
-                                {5, 5, 5}, // ■ ■ ■
-                                {0, 0, 0}, // □ □ □
-                            },
-                            Preview = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {0, 0, 5, 0}, // □ □ ■ □
-                                {5, 5, 5, 0}, // ■ ■ ■ □
-                                {0, 0, 0, 0}, // □ □ □ □
-                            },
-                        };
-                    case 6:
-                        //L
-                        return new TetrisPiece {
-                            Type = TetrisConstants.PieceTypeL,
-                            Data = new[,] {
-                                {6, 0, 0}, // ■ □ □
-                                {6, 6, 6}, // ■ ■ ■
-                                {0, 0, 0}, // □ □ □
-                            },
-                            Preview = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {6, 0, 0, 0}, // ■ □ □ □
-                                {6, 6, 6, 0}, // ■ ■ ■ □
-                                {0, 0, 0, 0}, // □ □ □ □
-                            },
-                        };
-                    default:
-                        //T
-                        return new TetrisPiece {
-                            Type = TetrisConstants.PieceTypeT,
-                            Data = new[,] {
-                                {0, 7, 0}, // □ ■ □
-                                {7, 7, 7}, // ■ ■ ■
-                                {0, 0, 0}, // □ □ □
-                            },
-                            Preview = new[,] {
-                                {0, 0, 0, 0}, // □ □ □ □
-                                {0, 7, 0, 0}, // □ ■ □ □
-                                {7, 7, 7, 0}, // ■ ■ ■ □
-                                {0, 0, 0, 0}, // □ □ □ □
-                            },
-                        };
+                //完全ランダムではなく全種類が同じ頻度で取得されるようにする
+                if (_piecePool.Count == 0) {
+                    Reset();
                 }
+                var c = Random.Range(0, _piecePool.Count - 1);
+                var tetrisPiece = _piecePool[c];
+                _piecePool.Remove(tetrisPiece);
+                return tetrisPiece;
             }
         }
     }

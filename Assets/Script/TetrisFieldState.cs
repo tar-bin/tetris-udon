@@ -33,5 +33,9 @@ namespace Script {
             //現在の状態を固定
             Array.Copy(compositedField, CurrentField, CurrentField.Length);
         }
+
+        public void Clear() {
+            Array.Clear(CurrentField, 0, CurrentField.Length);
+        }
     }
 }

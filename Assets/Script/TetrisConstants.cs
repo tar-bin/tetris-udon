@@ -11,6 +11,7 @@ namespace Script {
             new Material(Shader.Find("Unlit/Color")) {color = Color.blue},
             new Material(Shader.Find("Unlit/Color")) {color = new Color(1.0f, 165.0f/255f, 0)},
             new Material(Shader.Find("Unlit/Color")) {color = Color.magenta},
+            new Material(Shader.Find("Unlit/Color")) {color = Color.gray},
         };
 
         public const int PositionMaxX = 10;
