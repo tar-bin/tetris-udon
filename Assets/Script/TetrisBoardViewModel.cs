@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 namespace Script {
     public class TetrisBoardViewModel : MonoBehaviour {
-        public TetrisFieldState State;
+        public TetrisFieldState FieldState;
 
+        private int[,] _compositedField;
+            
         // log
         private ILogger _logger;
 
@@ -17,12 +19,16 @@ namespace Script {
 
         // Update is called once per frame
         private void Update() {
-            UpdateBlocks();
+            //現在のピースを表示用にフィールドに合成
+            _compositedField = FieldState.CompositePieceToField();
+            //ボードを再描画
+            RedrawBoardBlocks();
         }
 
-        private void UpdateBlocks() {
-            var y = State.Data.GetLength(0);
-            var x = State.Data.GetLength(1);
+
+        private void RedrawBoardBlocks() {
+            var y = _compositedField.GetLength(0);
+            var x = _compositedField.GetLength(1);
             if (y > 20 || x > 10) {
                 _logger.Log($"over block size {x} x {y}");
                 return;
@@ -35,7 +41,7 @@ namespace Script {
                     var columnObj = rowObj.GetChild(j);
                     var meshRenderer = columnObj.GetComponent<MeshRenderer>();
 
-                    SetMaterial(meshRenderer, State.Data[i, j]);
+                    SetMaterial(meshRenderer, _compositedField[i, j]);
                 }
             }
         }
