@@ -17,8 +17,9 @@ namespace Script {
         }
 
         private void UpdateBlocks() {
-            var y = PieceData.Data.GetLength(0);
-            var x = PieceData.Data.GetLength(1);
+            var preview = PieceData.Preview;
+            var y = preview.GetLength(0);
+            var x = preview.GetLength(1);
             if (y > 20 || x > 10) {
                 _logger.Log($"over block size {x} x {y}");
                 return;
@@ -31,7 +32,7 @@ namespace Script {
                     var columnObj = rowObj.GetChild(j);
                     var meshRenderer = columnObj.GetComponent<MeshRenderer>();
 
-                    SetMaterial(meshRenderer, PieceData.Data[i, j]);
+                    SetMaterial(meshRenderer, preview[i, j]);
                 }
             }
         }

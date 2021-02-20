@@ -16,6 +16,7 @@ namespace Script {
         public int Bottom { get; private set; }
         public int Left { get; private set; }
         public int Right { get; private set; }
+        public int[,] Preview { get; private set; }
         public int[,] Data { get; private set; }
 
         public static class Factory {
@@ -26,6 +27,12 @@ namespace Script {
                         //I
                         return new TetrisPiece {
                             Data = new[,] {
+                                {0, 0, 0, 0}, // □ □ □ □
+                                {1, 1, 1, 1}, // ■ ■ ■ ■
+                                {0, 0, 0, 0}, // □ □ □ □
+                                {0, 0, 0, 0}, // □ □ □ □ 
+                            },
+                            Preview = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {1, 1, 1, 1}, // ■ ■ ■ ■
                                 {0, 0, 0, 0}, // □ □ □ □
@@ -45,8 +52,14 @@ namespace Script {
                                 {0, 2, 2, 0}, // □ ■ ■ □
                                 {0, 0, 0, 0}, // □ □ □ □
                             },
-                            Top = 1,
-                            Bottom = 2,
+                            Preview = new[,] {
+                                {0, 0, 0, 0}, // □ □ □ □
+                                {0, 2, 2, 0}, // □ ■ ■ □
+                                {0, 2, 2, 0}, // □ ■ ■ □
+                                {0, 0, 0, 0}, // □ □ □ □
+                            },
+                            Top = 0,
+                            Bottom = 1,
                             Left = 1,
                             Right = 2,
                         };
@@ -54,13 +67,18 @@ namespace Script {
                         //S
                         return new TetrisPiece {
                             Data = new[,] {
+                                {0, 3, 3}, // □ ■ ■
+                                {3, 3, 0}, // ■ ■ □
+                                {0, 0, 0}, // □ □ □
+                            },
+                            Preview = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {0, 3, 3, 0}, // □ ■ ■ □
                                 {3, 3, 0, 0}, // ■ ■ □ □
                                 {0, 0, 0, 0}, // □ □ □ □
                             },
-                            Top = 1,
-                            Bottom = 2,
+                            Top = 0,
+                            Bottom = 1,
                             Left = 0,
                             Right = 2,
                         };
@@ -68,13 +86,18 @@ namespace Script {
                         //Z
                         return new TetrisPiece {
                             Data = new[,] {
+                                {4, 4, 0}, // ■ ■ □
+                                {0, 4, 4}, // □ ■ ■
+                                {0, 0, 0}, // □ □ □
+                            },
+                            Preview = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {4, 4, 0, 0}, // ■ ■ □ □
                                 {0, 4, 4, 0}, // □ ■ ■ □
                                 {0, 0, 0, 0}, // □ □ □ □
                             },
-                            Top = 1,
-                            Bottom = 2,
+                            Top = 0,
+                            Bottom = 1,
                             Left = 0,
                             Right = 2,
                         };
@@ -82,13 +105,18 @@ namespace Script {
                         //J
                         return new TetrisPiece {
                             Data = new[,] {
+                                {0, 0, 5}, // □ □ ■
+                                {5, 5, 5}, // ■ ■ ■
+                                {0, 0, 0}, // □ □ □
+                            },
+                            Preview = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {0, 0, 5, 0}, // □ □ ■ □
                                 {5, 5, 5, 0}, // ■ ■ ■ □
                                 {0, 0, 0, 0}, // □ □ □ □
                             },
-                            Top = 1,
-                            Bottom = 2,
+                            Top = 0,
+                            Bottom = 1,
                             Left = 0,
                             Right = 2,
                         };
@@ -96,13 +124,18 @@ namespace Script {
                         //L
                         return new TetrisPiece {
                             Data = new[,] {
+                                {6, 0, 0}, // ■ □ □
+                                {6, 6, 6}, // ■ ■ ■
+                                {0, 0, 0}, // □ □ □
+                            },
+                            Preview = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {6, 0, 0, 0}, // ■ □ □ □
                                 {6, 6, 6, 0}, // ■ ■ ■ □
                                 {0, 0, 0, 0}, // □ □ □ □
                             },
-                            Top = 1,
-                            Bottom = 2,
+                            Top = 0,
+                            Bottom = 1,
                             Left = 0,
                             Right = 2,
                         };
@@ -110,13 +143,18 @@ namespace Script {
                         //T
                         return new TetrisPiece {
                             Data = new[,] {
+                                {0, 7, 0}, // □ ■ □
+                                {7, 7, 7}, // ■ ■ ■
+                                {0, 0, 0}, // □ □ □
+                            },
+                            Preview = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {0, 7, 0, 0}, // □ ■ □ □
                                 {7, 7, 7, 0}, // ■ ■ ■ □
                                 {0, 0, 0, 0}, // □ □ □ □
                             },
-                            Top = 1,
-                            Bottom = 2,
+                            Top = 0,
+                            Bottom = 1,
                             Left = 0,
                             Right = 2,
                         };

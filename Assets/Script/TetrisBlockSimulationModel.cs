@@ -43,6 +43,7 @@ namespace Script {
                     //TODO
 
                     //削除した行を詰める
+                    //TODO
 
                     //次のピースに入れ替え
                     _fieldState.CurrentPiece = _nextPiece;
@@ -56,6 +57,14 @@ namespace Script {
             }
         }
 
+        public bool TurnLeft() {
+            return false;
+        }
+
+        public bool TurnRight() {
+            return false;
+        }
+        
         public bool MoveLeft() {
             var currentPiece = _fieldState.CurrentPiece;
             var left = currentPiece.Left;
