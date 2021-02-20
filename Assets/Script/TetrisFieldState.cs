@@ -2,6 +2,7 @@ using System;
 
 namespace Script {
     public class TetrisFieldState {
+        
         public TetrisFieldState() {
             CurrentField = new int[TetrisConstants.PositionMaxY, TetrisConstants.PositionMaxX];
         }

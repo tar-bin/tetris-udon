@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static Script.TetrisConstants;
-using Random = UnityEngine.Random;
 
 namespace Script {
     public class TetrisBlockSimulationModel : MonoBehaviour {
@@ -54,7 +51,7 @@ namespace Script {
                         _isNeedPacking = true;
                         _autoMoveDownFrameCount = 0;
                     }
-                    
+
                     //次のピースに入れ替え
                     _fieldState.CurrentPiece = _nextPiece;
                     _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
@@ -125,24 +122,102 @@ namespace Script {
         public bool RotateLeft() {
             var currentPiece = _fieldState.CurrentPiece;
             var rotatedData = currentPiece.GetRotateLeftData();
-            return CheckAndApplyRotate(rotatedData, currentPiece);
+            var currentAngle = currentPiece.Angle;
+
+            int[] xs;
+            int[] ys;
+            int nextAngle;
+            switch (currentAngle) {
+                case Angle0:
+                    xs = new[] {0, 1, 1, 0, 1,};
+                    ys = new[] {0, 0, 1, -2, -2,};
+                    nextAngle = Angle270;
+                    break;
+                case Angle90:
+                    xs = new[] {0, 1, 1, 0, 1,};
+                    ys = new[] {0, 0, -1, 2, 2,};
+                    nextAngle = Angle0;
+                    break;
+                case Angle180:
+                    xs = new[] {0, -1, -1, 0, -1,};
+                    ys = new[] {0, 0, 1, -2, -2,};
+                    nextAngle = Angle90;
+                    break;
+                default:
+                    xs = new[] {0, -1, -1, 0, -1,};
+                    ys = new[] {0, -1, -1, 2, 2,};
+                    nextAngle = Angle180;
+                    break;
+            }
+
+            for (var i = 0; i < 5; i++) {
+                var offsetX = xs[i];
+                var offsetY = ys[i];
+                if (CheckAndApplyRotate(rotatedData, currentPiece, offsetX, offsetY)) {
+                    currentPiece.Pos.X += offsetX;
+                    currentPiece.Pos.Y += offsetY;
+                    currentPiece.Angle = nextAngle;
+                    return true;
+                }
+            }
+            
+            return false;
         }
 
         public bool RotateRight() {
             var currentPiece = _fieldState.CurrentPiece;
             var rotatedData = currentPiece.GetRotateRightData();
-            return CheckAndApplyRotate(rotatedData, currentPiece);
+            var currentAngle = currentPiece.Angle;
+
+            int[] xs;
+            int[] ys;
+            int nextAngle;
+            switch (currentAngle) {
+                case Angle0:
+                    xs = new[] {0, -1, -1, 0, -1,};
+                    ys = new[] {0, 0, 1, -2, -2,};
+                    nextAngle = Angle90;
+                    break;
+                case Angle90:
+                    xs = new[] {0, 1, 1, 0, 1,};
+                    ys = new[] {0, 0, -1, 2, 2,};
+                    nextAngle = Angle180;
+                    break;
+                case Angle180:
+                    xs = new[] {0, 1, 1, 0, 1,};
+                    ys = new[] {0, 0, 1, -2, -2,};
+                    nextAngle = Angle270;
+                    break;
+                default:
+                    xs = new[] {0, -2, -2, 0, -1,};
+                    ys = new[] {0, 0, -1, 2, 2,};
+                    nextAngle = Angle0;
+                    break;
+            }
+
+            for (var i = 0; i < 5; i++) {
+                var offsetX = xs[i];
+                var offsetY = ys[i];
+                if (CheckAndApplyRotate(rotatedData, currentPiece, offsetX, offsetY)) {
+                    currentPiece.Pos.X += offsetX;
+                    currentPiece.Pos.Y += offsetY;
+                    currentPiece.Angle = nextAngle;
+                    return true;
+                }
+            }
+            
+            return false;
         }
 
-        private bool CheckAndApplyRotate(int[,] rotatedData, TetrisPiece currentPiece) {
+        private bool CheckAndApplyRotate(int[,] rotatedData, TetrisPiece currentPiece, int offsetX, int offsetY) {
             // 回転後にブロックと衝突するか
             for (var i = 0; i < rotatedData.GetLength(0); i++) {
                 for (var j = 0; j < rotatedData.GetLength(1); j++) {
                     var block = rotatedData[i, j];
                     if (block == 0) continue;
 
-                    var x = currentPiece.Pos.X + j;
-                    var y = currentPiece.Pos.Y + i;
+                    var x = currentPiece.Pos.X + j + offsetX;
+                    var y = currentPiece.Pos.Y + i + offsetY;
                     if (x < 0 || x >= PositionMaxX ||
                         y < 0 || y >= PositionMaxY ||
                         _fieldState.CurrentField[y, x] != 0) {

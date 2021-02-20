@@ -17,5 +17,9 @@ namespace Script {
         public const int PositionMaxY = 20;
         public const int PositionSpawnX = 3;
         public const int PositionSpawnY = -3;
+        public const int Angle0 = 0;
+        public const int Angle90 = 1;
+        public const int Angle180 = 2;
+        public const int Angle270 = 3;
     }
 }

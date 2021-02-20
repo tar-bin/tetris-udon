@@ -11,6 +11,7 @@ namespace Script {
         public Position Pos { get; } = new Position();
         public int[,] Preview { get; private set; }
         public int[,] Data { get; private set; }
+        public int Angle { get; set; } = TetrisConstants.Angle0;
 
         public int GetTop() {
             for (var i = 0; i < Data.GetLength(0); i++) {
@@ -102,7 +103,7 @@ namespace Script {
                                 {1, 1, 1, 1}, // ■ ■ ■ ■
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {0, 0, 0, 0}, // □ □ □ □ 
-                            },
+                            }
                         };
                     case 2:
                         //O
