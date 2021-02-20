@@ -57,17 +57,49 @@ namespace Script {
             }
         }
 
-        public bool TurnLeft() {
-            return false;
+        public void FrameCountDecrease(int count) {
+            _frameCount -= count;
         }
 
-        public bool TurnRight() {
-            return false;
+        public bool RotateLeft() {
+            var currentPiece = _fieldState.CurrentPiece;
+            var rotatedData = currentPiece.GetRotateLeftData();
+            return CheckAndApplyRotate(rotatedData, currentPiece);
         }
-        
+
+        public bool RotateRight() {
+            var currentPiece = _fieldState.CurrentPiece;
+            var rotatedData = currentPiece.GetRotateRightData();
+            return CheckAndApplyRotate(rotatedData, currentPiece);
+        }
+
+        private bool CheckAndApplyRotate(int[,] rotatedData, TetrisPiece currentPiece) {
+            // 回転後にブロックと衝突するか
+            for (var i = 0; i < rotatedData.GetLength(0); i++) {
+                for (var j = 0; j < rotatedData.GetLength(1); j++) {
+                    var block = rotatedData[i, j];
+                    if (block == 0) continue;
+
+                    var x = currentPiece.Pos.X + j;
+                    var y = currentPiece.Pos.Y + i;
+                    if (x >= 0 && x < PositionMaxX &&
+                        y >= 0 && y < PositionMaxY &&
+                        _fieldState.CurrentField[y, x] != 0) {
+                        // 衝突する場合は回転を適用しない
+                        return false;
+                    }
+                }
+            }
+
+            // 回転を適用
+            Array.Copy(rotatedData, currentPiece.Data, currentPiece.Data.Length);
+
+            return true;
+        }
+
         public bool MoveLeft() {
             var currentPiece = _fieldState.CurrentPiece;
-            var left = currentPiece.Left;
+            var left = currentPiece.GetLeft();
             var posX = currentPiece.Pos.X;
             var posY = currentPiece.Pos.Y;
 
@@ -99,7 +131,7 @@ namespace Script {
 
         public bool MoveRight() {
             var currentPiece = _fieldState.CurrentPiece;
-            var right = currentPiece.Right;
+            var right = currentPiece.GetRight();
 
             // はみ出し判定
             if (currentPiece.Pos.X + right >= PositionMaxX - 1) {
@@ -129,7 +161,7 @@ namespace Script {
 
         public bool MoveDown() {
             var currentPiece = _fieldState.CurrentPiece;
-            var bottom = currentPiece.Bottom;
+            var bottom = currentPiece.GetBottom();
 
             // はみ出し判定
             if (currentPiece.Pos.Y + bottom >= PositionMaxY - 1) {

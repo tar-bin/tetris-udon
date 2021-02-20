@@ -10,12 +10,22 @@ namespace Script {
 
         private void Update() {
             // 左回転
-            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Q)) {
-                _model.TurnLeft();
+            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.E)) {
+                if (_model.RotateLeft()) {
+                    //回転が適用できた場合はカウントに猶予を追加
+                    _model.FrameCountDecrease(12);
+                }
             }
             // 右回転
-            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.E)) {
-                _model.TurnRight();
+            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.R)) {
+                if (_model.RotateRight()) {
+                    //回転が適用できた場合はカウントに猶予を追加
+                    _model.FrameCountDecrease(12);
+                }
+            }
+            // ハードドロップ
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
+                while (_model.MoveDown()) {}
             }
             // 左移動
             if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
