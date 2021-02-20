@@ -143,8 +143,8 @@ namespace Script {
 
                     var x = currentPiece.Pos.X + j;
                     var y = currentPiece.Pos.Y + i;
-                    if (x >= 0 && x < PositionMaxX &&
-                        y >= 0 && y < PositionMaxY &&
+                    if (x < 0 || x >= PositionMaxX ||
+                        y < 0 || y >= PositionMaxY ||
                         _fieldState.CurrentField[y, x] != 0) {
                         // 衝突する場合は回転を適用しない
                         return false;
