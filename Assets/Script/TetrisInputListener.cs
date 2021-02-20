@@ -26,6 +26,7 @@ namespace Script {
             // ハードドロップ
             if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
                 while (_model.MoveDown()) {}
+                _model.UpdatePiece();
             }
             // 左移動
             if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {

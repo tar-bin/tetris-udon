@@ -8,6 +8,7 @@ namespace Script {
             public int Y { get; set; }
         }
 
+        public int Type { get; private set; }
         public Position Pos { get; } = new Position();
         public int[,] Preview { get; private set; }
         public int[,] Data { get; private set; }
@@ -92,6 +93,7 @@ namespace Script {
                     case 1:
                         //I
                         return new TetrisPiece {
+                            Type = TetrisConstants.PieceTypeI,
                             Data = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {1, 1, 1, 1}, // ■ ■ ■ ■
@@ -108,6 +110,7 @@ namespace Script {
                     case 2:
                         //O
                         return new TetrisPiece {
+                            Type = TetrisConstants.PieceTypeO,
                             Data = new[,] {
                                 {0, 0, 0, 0}, // □ □ □ □
                                 {0, 2, 2, 0}, // □ ■ ■ □
@@ -124,6 +127,7 @@ namespace Script {
                     case 3:
                         //S
                         return new TetrisPiece {
+                            Type = TetrisConstants.PieceTypeS,
                             Data = new[,] {
                                 {0, 3, 3}, // □ ■ ■
                                 {3, 3, 0}, // ■ ■ □
@@ -139,6 +143,7 @@ namespace Script {
                     case 4:
                         //Z
                         return new TetrisPiece {
+                            Type = TetrisConstants.PieceTypeZ,
                             Data = new[,] {
                                 {4, 4, 0}, // ■ ■ □
                                 {0, 4, 4}, // □ ■ ■
@@ -154,6 +159,7 @@ namespace Script {
                     case 5:
                         //J
                         return new TetrisPiece {
+                            Type = TetrisConstants.PieceTypeJ,
                             Data = new[,] {
                                 {0, 0, 5}, // □ □ ■
                                 {5, 5, 5}, // ■ ■ ■
@@ -169,6 +175,7 @@ namespace Script {
                     case 6:
                         //L
                         return new TetrisPiece {
+                            Type = TetrisConstants.PieceTypeL,
                             Data = new[,] {
                                 {6, 0, 0}, // ■ □ □
                                 {6, 6, 6}, // ■ ■ ■
@@ -184,6 +191,7 @@ namespace Script {
                     default:
                         //T
                         return new TetrisPiece {
+                            Type = TetrisConstants.PieceTypeT,
                             Data = new[,] {
                                 {0, 7, 0}, // □ ■ □
                                 {7, 7, 7}, // ■ ■ ■

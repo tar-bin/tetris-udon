@@ -43,25 +43,29 @@ namespace Script {
             if (++_autoMoveDownFrameCount > 24) {
                 _autoMoveDownFrameCount = 0;
                 if (!MoveDown()) {
-                    //ピースの位置を確定し、現在の状態を固定
-                    _fieldState.UpdateAndFixCurrentField();
-
-                    //削除処理
-                    if (DeleteFilledLine()) {
-                        _isNeedPacking = true;
-                        _autoMoveDownFrameCount = 0;
-                    }
-
                     //次のピースに入れ替え
-                    _fieldState.CurrentPiece = _nextPiece;
-                    _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
-                    nextPieceViewModel.PieceData = _nextPiece;
-
-                    // Spawn位置に補正
-                    _fieldState.CurrentPiece.Pos.X = PositionSpawnX;
-                    _fieldState.CurrentPiece.Pos.Y = PositionSpawnY;
+                    UpdatePiece();
                 }
             }
+        }
+
+        public void UpdatePiece() {
+            //ピースの位置を確定し、現在の状態を固定
+            _fieldState.UpdateAndFixCurrentField();
+
+            //削除処理
+            if (DeleteFilledLine()) {
+                _isNeedPacking = true;
+                _autoMoveDownFrameCount = 0;
+            }
+
+            _fieldState.CurrentPiece = _nextPiece;
+            _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
+            nextPieceViewModel.PieceData = _nextPiece;
+
+            // Spawn位置に補正
+            _fieldState.CurrentPiece.Pos.X = PositionSpawnX;
+            _fieldState.CurrentPiece.Pos.Y = PositionSpawnY;
         }
 
         private bool DeleteFilledLine() {
@@ -121,38 +125,61 @@ namespace Script {
 
         public bool RotateLeft() {
             var currentPiece = _fieldState.CurrentPiece;
+
+            //タイプOは無条件でtrue
+            if (currentPiece.Type == TetrisConstants.PieceTypeO) {
+                return true;
+            }
+
             var rotatedData = currentPiece.GetRotateLeftData();
             var currentAngle = currentPiece.Angle;
 
-            int[] xs;
-            int[] ys;
+            //https://tetris.wiki/Super_Rotation_System
+            int[,] wallKickData;
             int nextAngle;
-            switch (currentAngle) {
-                case Angle0:
-                    xs = new[] {0, 1, 1, 0, 1,};
-                    ys = new[] {0, 0, 1, -2, -2,};
-                    nextAngle = Angle270;
-                    break;
-                case Angle90:
-                    xs = new[] {0, 1, 1, 0, 1,};
-                    ys = new[] {0, 0, -1, 2, 2,};
-                    nextAngle = Angle0;
-                    break;
-                case Angle180:
-                    xs = new[] {0, -1, -1, 0, -1,};
-                    ys = new[] {0, 0, 1, -2, -2,};
-                    nextAngle = Angle90;
-                    break;
-                default:
-                    xs = new[] {0, -1, -1, 0, -1,};
-                    ys = new[] {0, -1, -1, 2, 2,};
-                    nextAngle = Angle180;
-                    break;
+            if (currentPiece.Type == TetrisConstants.PieceTypeI) {
+                switch (currentAngle) {
+                    case Angle0: //0->L
+                        wallKickData = new[,] {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}};
+                        nextAngle = Angle270;
+                        break;
+                    case Angle90: //R->0
+                        wallKickData = new[,] {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}};
+                        nextAngle = Angle0;
+                        break;
+                    case Angle180: //2->R
+                        wallKickData = new[,] {{0, 0}, {+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}};
+                        nextAngle = Angle90;
+                        break;
+                    default: //L->2
+                        wallKickData = new[,] {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}};
+                        nextAngle = Angle180;
+                        break;
+                }
+            } else {
+                switch (currentAngle) {
+                    case Angle0: //0->L
+                        wallKickData = new[,] {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}};
+                        nextAngle = Angle270;
+                        break;
+                    case Angle90: //R->0
+                        wallKickData = new[,] {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}};
+                        nextAngle = Angle0;
+                        break;
+                    case Angle180: //2->R
+                        wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}};
+                        nextAngle = Angle90;
+                        break;
+                    default: //L->2
+                        wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}};
+                        nextAngle = Angle180;
+                        break;
+                }
             }
 
             for (var i = 0; i < 5; i++) {
-                var offsetX = xs[i];
-                var offsetY = ys[i];
+                var offsetX = wallKickData[i, 0];
+                var offsetY = wallKickData[i, 1];
                 if (CheckAndApplyRotate(rotatedData, currentPiece, offsetX, offsetY)) {
                     currentPiece.Pos.X += offsetX;
                     currentPiece.Pos.Y += offsetY;
@@ -160,44 +187,67 @@ namespace Script {
                     return true;
                 }
             }
-            
+
             return false;
         }
 
         public bool RotateRight() {
             var currentPiece = _fieldState.CurrentPiece;
+
+            //タイプOは無条件でtrue
+            if (currentPiece.Type == TetrisConstants.PieceTypeO) {
+                return true;
+            }
+
             var rotatedData = currentPiece.GetRotateRightData();
             var currentAngle = currentPiece.Angle;
 
-            int[] xs;
-            int[] ys;
+            //https://tetris.wiki/Super_Rotation_System
+            int[,] wallKickData;
             int nextAngle;
-            switch (currentAngle) {
-                case Angle0:
-                    xs = new[] {0, -1, -1, 0, -1,};
-                    ys = new[] {0, 0, 1, -2, -2,};
-                    nextAngle = Angle90;
-                    break;
-                case Angle90:
-                    xs = new[] {0, 1, 1, 0, 1,};
-                    ys = new[] {0, 0, -1, 2, 2,};
-                    nextAngle = Angle180;
-                    break;
-                case Angle180:
-                    xs = new[] {0, 1, 1, 0, 1,};
-                    ys = new[] {0, 0, 1, -2, -2,};
-                    nextAngle = Angle270;
-                    break;
-                default:
-                    xs = new[] {0, -2, -2, 0, -1,};
-                    ys = new[] {0, 0, -1, 2, 2,};
-                    nextAngle = Angle0;
-                    break;
+            if (currentPiece.Type == TetrisConstants.PieceTypeI) {
+                switch (currentAngle) {
+                    case Angle0: //0->R
+                        wallKickData = new[,] {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}};
+                        nextAngle = Angle90;
+                        break;
+                    case Angle90: //R->2
+                        wallKickData = new[,] {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}};
+                        nextAngle = Angle180;
+                        break;
+                    case Angle180: //2->L
+                        wallKickData = new[,] {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}};
+                        nextAngle = Angle270;
+                        break;
+                    default: //L->0
+                        wallKickData = new[,] {{0, 0}, {+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}};
+                        nextAngle = Angle0;
+                        break;
+                }
+            } else {
+                switch (currentAngle) {
+                    case Angle0: //0->R
+                        wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, 1}, {0, 2}, {-1, -2}};
+                        nextAngle = Angle90;
+                        break;
+                    case Angle90: //R->2
+                        wallKickData = new[,] {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {0, 2}};
+                        nextAngle = Angle180;
+                        break;
+                    case Angle180: //2->L
+                        wallKickData = new[,] {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}};
+                        nextAngle = Angle270;
+                        break;
+                    default: //L->0
+                        wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}};
+                        nextAngle = Angle0;
+                        break;
+                }
             }
 
             for (var i = 0; i < 5; i++) {
-                var offsetX = xs[i];
-                var offsetY = ys[i];
+                var offsetX = wallKickData[i, 0];
+                var offsetY = wallKickData[i, 1];
                 if (CheckAndApplyRotate(rotatedData, currentPiece, offsetX, offsetY)) {
                     currentPiece.Pos.X += offsetX;
                     currentPiece.Pos.Y += offsetY;
@@ -205,7 +255,7 @@ namespace Script {
                     return true;
                 }
             }
-            
+
             return false;
         }
 

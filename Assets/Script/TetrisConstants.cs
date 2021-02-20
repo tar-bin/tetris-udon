@@ -21,5 +21,13 @@ namespace Script {
         public const int Angle90 = 1;
         public const int Angle180 = 2;
         public const int Angle270 = 3;
+        public const int PieceTypeNone = 0;
+        public const int PieceTypeI = 1;
+        public const int PieceTypeO = 2;
+        public const int PieceTypeS = 3;
+        public const int PieceTypeZ = 4;
+        public const int PieceTypeJ = 5;
+        public const int PieceTypeL = 6;
+        public const int PieceTypeT = 7;
     }
 }
