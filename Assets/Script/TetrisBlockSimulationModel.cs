@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using static Script.TetrisConstants;
 
 namespace Script {
     public class TetrisBlockSimulationModel : MonoBehaviour {
@@ -12,7 +11,9 @@ namespace Script {
 
         private int _autoMoveDownFrameCount;
         private int _deleteDelayFrameCount;
+        private int _gameOverDelayFrameCount;
         private bool _isNeedPacking;
+        private bool _isGameOver;
 
         private void Start() {
             _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
@@ -20,19 +21,45 @@ namespace Script {
                 CurrentPiece = TetrisPiece.Factory.CreateRandomPiece()
             };
             _autoMoveDownFrameCount = 0;
-
-            // Spawn位置に補正
-            _fieldState.CurrentPiece.Pos.X = PositionSpawnX;
-            _fieldState.CurrentPiece.Pos.Y = PositionSpawnY;
+            _deleteDelayFrameCount = 0;
+            _gameOverDelayFrameCount = 0;
 
             // ViewModel Bindings
             boardViewModel.FieldState = _fieldState; //FIXME
             nextPieceViewModel.PieceData = _nextPiece;
         }
 
+        private void GameOver(int count) {
+            var field = _fieldState.CurrentField;
+
+            var y = field.GetLength(0) - count - 1;
+            if (y < 0) return;
+
+            for (var j = 0; j < field.GetLength(1); j++) {
+                if (field[y, j] != 0) {
+                    field[y, j] = 8;
+                }
+            }
+        }
+
         private void Update() {
+            if (_isGameOver) {
+                if (_gameOverDelayFrameCount > 60) {
+                    // 新規ゲーム設定
+                    UpdatePiece();
+                    _fieldState.Clear();
+                    _isGameOver = false;
+                    _gameOverDelayFrameCount = 0;
+                    return;
+                }
+                // 下からグレーアウト
+                GameOver(_gameOverDelayFrameCount / 2);
+                _gameOverDelayFrameCount++;
+                return;
+            }
+
             if (_isNeedPacking) {
-                if (++_autoMoveDownFrameCount > 10) {
+                if (++_deleteDelayFrameCount > 10) {
                     //削除した行を詰める
                     PackLine();
                     _isNeedPacking = false;
@@ -45,6 +72,13 @@ namespace Script {
                 if (!MoveDown()) {
                     //次のピースに入れ替え
                     UpdatePiece();
+
+                    //ゲームオーバーチェック
+                    if (_fieldState.CurrentField[0, TetrisConstants.PositionSpawnX] != 0 ||
+                        _fieldState.CurrentField[0, TetrisConstants.PositionSpawnX + 1] != 0 ||
+                        _fieldState.CurrentField[0, TetrisConstants.PositionSpawnX + 2] != 0) {
+                        _isGameOver = true;
+                    }
                 }
             }
         }
@@ -62,10 +96,6 @@ namespace Script {
             _fieldState.CurrentPiece = _nextPiece;
             _nextPiece = TetrisPiece.Factory.CreateRandomPiece();
             nextPieceViewModel.PieceData = _nextPiece;
-
-            // Spawn位置に補正
-            _fieldState.CurrentPiece.Pos.X = PositionSpawnX;
-            _fieldState.CurrentPiece.Pos.Y = PositionSpawnY;
         }
 
         private bool DeleteFilledLine() {
@@ -95,7 +125,7 @@ namespace Script {
 
         private void PackLine() {
             var field = _fieldState.CurrentField;
-            var packedField = new int[PositionMaxY, PositionMaxX];
+            var packedField = new int[TetrisConstants.PositionMaxY, TetrisConstants.PositionMaxX];
             var y = field.GetLength(0) - 1;
             for (var i = field.GetLength(0) - 1; i >= 0; i--) {
                 //ラインにブロックが存在するかチェック
@@ -139,40 +169,40 @@ namespace Script {
             int nextAngle;
             if (currentPiece.Type == TetrisConstants.PieceTypeI) {
                 switch (currentAngle) {
-                    case Angle0: //0->L
+                    case TetrisConstants.Angle0: //0->L
                         wallKickData = new[,] {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}};
-                        nextAngle = Angle270;
+                        nextAngle = TetrisConstants.Angle270;
                         break;
-                    case Angle90: //R->0
+                    case TetrisConstants.Angle90: //R->0
                         wallKickData = new[,] {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}};
-                        nextAngle = Angle0;
+                        nextAngle = TetrisConstants.Angle0;
                         break;
-                    case Angle180: //2->R
+                    case TetrisConstants.Angle180: //2->R
                         wallKickData = new[,] {{0, 0}, {+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}};
-                        nextAngle = Angle90;
+                        nextAngle = TetrisConstants.Angle90;
                         break;
                     default: //L->2
                         wallKickData = new[,] {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}};
-                        nextAngle = Angle180;
+                        nextAngle = TetrisConstants.Angle180;
                         break;
                 }
             } else {
                 switch (currentAngle) {
-                    case Angle0: //0->L
+                    case TetrisConstants.Angle0: //0->L
                         wallKickData = new[,] {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}};
-                        nextAngle = Angle270;
+                        nextAngle = TetrisConstants.Angle270;
                         break;
-                    case Angle90: //R->0
+                    case TetrisConstants.Angle90: //R->0
                         wallKickData = new[,] {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}};
-                        nextAngle = Angle0;
+                        nextAngle = TetrisConstants.Angle0;
                         break;
-                    case Angle180: //2->R
+                    case TetrisConstants.Angle180: //2->R
                         wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}};
-                        nextAngle = Angle90;
+                        nextAngle = TetrisConstants.Angle90;
                         break;
                     default: //L->2
                         wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}};
-                        nextAngle = Angle180;
+                        nextAngle = TetrisConstants.Angle180;
                         break;
                 }
             }
@@ -207,40 +237,40 @@ namespace Script {
             int nextAngle;
             if (currentPiece.Type == TetrisConstants.PieceTypeI) {
                 switch (currentAngle) {
-                    case Angle0: //0->R
+                    case TetrisConstants.Angle0: //0->R
                         wallKickData = new[,] {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}};
-                        nextAngle = Angle90;
+                        nextAngle = TetrisConstants.Angle90;
                         break;
-                    case Angle90: //R->2
+                    case TetrisConstants.Angle90: //R->2
                         wallKickData = new[,] {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}};
-                        nextAngle = Angle180;
+                        nextAngle = TetrisConstants.Angle180;
                         break;
-                    case Angle180: //2->L
+                    case TetrisConstants.Angle180: //2->L
                         wallKickData = new[,] {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}};
-                        nextAngle = Angle270;
+                        nextAngle = TetrisConstants.Angle270;
                         break;
                     default: //L->0
                         wallKickData = new[,] {{0, 0}, {+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}};
-                        nextAngle = Angle0;
+                        nextAngle = TetrisConstants.Angle0;
                         break;
                 }
             } else {
                 switch (currentAngle) {
-                    case Angle0: //0->R
+                    case TetrisConstants.Angle0: //0->R
                         wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, 1}, {0, 2}, {-1, -2}};
-                        nextAngle = Angle90;
+                        nextAngle = TetrisConstants.Angle90;
                         break;
-                    case Angle90: //R->2
+                    case TetrisConstants.Angle90: //R->2
                         wallKickData = new[,] {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {0, 2}};
-                        nextAngle = Angle180;
+                        nextAngle = TetrisConstants.Angle180;
                         break;
-                    case Angle180: //2->L
+                    case TetrisConstants.Angle180: //2->L
                         wallKickData = new[,] {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}};
-                        nextAngle = Angle270;
+                        nextAngle = TetrisConstants.Angle270;
                         break;
                     default: //L->0
                         wallKickData = new[,] {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}};
-                        nextAngle = Angle0;
+                        nextAngle = TetrisConstants.Angle0;
                         break;
                 }
             }
@@ -268,8 +298,8 @@ namespace Script {
 
                     var x = currentPiece.Pos.X + j + offsetX;
                     var y = currentPiece.Pos.Y + i + offsetY;
-                    if (x < 0 || x >= PositionMaxX ||
-                        y < 0 || y >= PositionMaxY ||
+                    if (x < 0 || x >= TetrisConstants.PositionMaxX ||
+                        y < 0 || y >= TetrisConstants.PositionMaxY ||
                         _fieldState.CurrentField[y, x] != 0) {
                         // 衝突する場合は回転を適用しない
                         return false;
@@ -302,8 +332,8 @@ namespace Script {
 
                     var x = currentPiece.Pos.X + j - 1;
                     var y = currentPiece.Pos.Y + i;
-                    if (x >= 0 && x < PositionMaxX &&
-                        y >= 0 && y < PositionMaxY &&
+                    if (x >= 0 && x < TetrisConstants.PositionMaxX &&
+                        y >= 0 && y < TetrisConstants.PositionMaxY &&
                         _fieldState.CurrentField[y, x] != 0) {
                         return false;
                     }
@@ -320,7 +350,7 @@ namespace Script {
             var right = currentPiece.GetRight();
 
             // はみ出し判定
-            if (currentPiece.Pos.X + right >= PositionMaxX - 1) {
+            if (currentPiece.Pos.X + right >= TetrisConstants.PositionMaxX - 1) {
                 return false;
             }
 
@@ -332,8 +362,8 @@ namespace Script {
 
                     var x = currentPiece.Pos.X + j + 1;
                     var y = currentPiece.Pos.Y + i;
-                    if (x >= 0 && x < PositionMaxX &&
-                        y >= 0 && y < PositionMaxY &&
+                    if (x >= 0 && x < TetrisConstants.PositionMaxX &&
+                        y >= 0 && y < TetrisConstants.PositionMaxY &&
                         _fieldState.CurrentField[y, x] != 0) {
                         return false;
                     }
@@ -350,7 +380,7 @@ namespace Script {
             var bottom = currentPiece.GetBottom();
 
             // はみ出し判定
-            if (currentPiece.Pos.Y + bottom >= PositionMaxY - 1) {
+            if (currentPiece.Pos.Y + bottom >= TetrisConstants.PositionMaxY - 1) {
                 return false;
             }
 
@@ -362,8 +392,8 @@ namespace Script {
 
                     var x = currentPiece.Pos.X + j;
                     var y = currentPiece.Pos.Y + i + 1;
-                    if (x >= 0 && x < PositionMaxX &&
-                        y >= 0 && y < PositionMaxY &&
+                    if (x >= 0 && x < TetrisConstants.PositionMaxX &&
+                        y >= 0 && y < TetrisConstants.PositionMaxY &&
                         _fieldState.CurrentField[y, x] != 0) {
                         return false;
                     }

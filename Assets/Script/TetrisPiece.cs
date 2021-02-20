@@ -10,7 +10,12 @@ namespace Script {
         }
 
         public int Type { get; private set; }
-        public Position Pos { get; } = new Position();
+
+        public Position Pos { get; } = new Position {
+            X = TetrisConstants.PositionSpawnX,
+            Y = TetrisConstants.PositionSpawnY,
+        };
+
         public int[,] Preview { get; private set; }
         public int[,] Data { get; private set; }
         public int Angle { get; set; } = TetrisConstants.Angle0;
