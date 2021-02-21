@@ -35,3 +35,12 @@ sysinfo.txt
 *.apk
 *.unitypackage
 .idea
+Assets/SerializedUdonPrograms
+Assets/Udon
+Assets/VRChat Examples
+Assets/VRCSDK
+Assets/VRCSDK.meta
+Assets/SerializedUdonPrograms.meta
+Assets/Udon.meta
+Assets/VRChat Examples.meta
+Packages/com.vrchat.vrcsdk3
