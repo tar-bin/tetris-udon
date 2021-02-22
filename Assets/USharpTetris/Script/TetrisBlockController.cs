@@ -1001,7 +1001,6 @@ public class TetrisBlockController : UdonSharpBehaviour {
     }
 
     private int GetPieceSize(int[][] data) {
-        var length = data.Length;
-        return length > 9 ? 4 : 3;
+        return data.Length;
     }
 }
